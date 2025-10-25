@@ -9,6 +9,7 @@ COPY . .
 
 RUN npm run db:generate
 RUN npm run build
+RUN ls -la dist/
 
 EXPOSE 3001
 

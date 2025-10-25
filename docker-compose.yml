@@ -21,9 +21,6 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/ai_scribe
     depends_on:
       - postgres
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
 
   frontend:
     build:
