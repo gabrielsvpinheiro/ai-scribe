@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { PatientResponse } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+import path from 'path';
 
 const prisma = new PrismaClient();
 
@@ -116,5 +118,44 @@ export const createPatient = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error creating patient:', error);
     res.status(500).json({ error: 'Failed to create patient' });
+  }
+};
+
+export const deletePatient = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const patient = await prisma.patient.findUnique({
+      where: { id },
+      include: {
+        notes: true
+      }
+    });
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+
+    for (const note of patient.notes) {
+      if (note.audioUrl) {
+        const filepath = path.join(process.env.UPLOAD_DIR || './uploads', path.basename(note.audioUrl));
+        if (fs.existsSync(filepath)) {
+          fs.unlinkSync(filepath);
+        }
+      }
+    }
+
+    await prisma.note.deleteMany({
+      where: { patientId: id }
+    });
+
+    await prisma.patient.delete({
+      where: { id }
+    });
+
+    res.json({ message: 'Patient and associated notes deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting patient:', error);
+    res.status(500).json({ error: 'Failed to delete patient' });
   }
 };
