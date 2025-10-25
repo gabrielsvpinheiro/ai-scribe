@@ -60,6 +60,20 @@ class ApiService {
       method: 'DELETE',
     });
   }
+
+  async createPatient(data: {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+  }): Promise<Patient> {
+    return this.request<Patient>('/api/patients', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
 }
 
 export default new ApiService();
