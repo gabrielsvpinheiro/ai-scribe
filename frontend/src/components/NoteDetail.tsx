@@ -96,9 +96,26 @@ const NoteDetail: React.FC<NoteDetailProps> = ({ note, onBack }) => {
                         <Mic className="h-4 w-4 text-primary" />
                         Audio Recording
                       </h4>
-                      <div className="bg-muted/30 p-4 rounded-lg border border-border">
-                        <audio controls className="w-full">
-                          <source src={note.audioUrl} type="audio/mpeg" />
+                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-lg border border-blue-200 shadow-sm">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="p-2 bg-blue-500 rounded-full">
+                            <Mic className="h-4 w-4 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-blue-900">Original Recording</p>
+                            <p className="text-xs text-blue-700">Listen to the audio note</p>
+                          </div>
+                        </div>
+                        <audio 
+                          controls 
+                          className="w-full h-10"
+                          style={{ 
+                            filter: 'hue-rotate(200deg) saturate(1.2)',
+                          }}
+                        >
+                          <source src={`http://localhost:3001${note.audioUrl}`} type="audio/mpeg" />
+                          <source src={`http://localhost:3001${note.audioUrl}`} type="audio/wav" />
+                          <source src={`http://localhost:3001${note.audioUrl}`} type="audio/mp4" />
                           Your browser does not support the audio element.
                         </audio>
                       </div>
