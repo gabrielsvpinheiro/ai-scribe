@@ -6,6 +6,7 @@ import NoteForm from './components/NoteForm';
 import NotesList from './components/NotesList';
 import NoteDetail from './components/NoteDetail';
 import PatientDetail from './components/PatientDetail';
+import AddPatientDialog from './components/AddPatientDialog';
 import { Card, CardContent } from './components/ui/card';
 import { Stethoscope } from 'lucide-react';
 
@@ -20,6 +21,7 @@ function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('dashboard');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [addPatientDialogOpen, setAddPatientDialogOpen] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -110,6 +112,28 @@ function App() {
     }
   };
 
+  const handleCreatePatient = async (data: {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+  }) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const newPatient = await apiService.createPatient(data);
+      setPatients(prev => [newPatient, ...prev]);
+    } catch (err) {
+      setError('Failed to create patient. Please try again.');
+      console.error('Error creating patient:', err);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const selectedNote = selectedNoteId ? notes.find(note => note.id === selectedNoteId) : null;
   const viewPatient = viewPatientId ? patients.find(p => p.id === viewPatientId) : null;
 
@@ -165,6 +189,7 @@ function App() {
             selectedPatientId={selectedPatientId}
             onSelectPatient={setSelectedPatientId}
             onViewPatient={handlePatientClick}
+            onAddPatient={() => setAddPatientDialogOpen(true)}
           />
           <NoteForm
             selectedPatientId={selectedPatientId}
@@ -178,6 +203,12 @@ function App() {
           onNoteClick={handleNoteClick}
         />
       </div>
+
+      <AddPatientDialog
+        open={addPatientDialogOpen}
+        onOpenChange={setAddPatientDialogOpen}
+        onSubmit={handleCreatePatient}
+      />
     </div>
   );
 }
