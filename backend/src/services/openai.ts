@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
-import { Readable } from 'stream';
+import fs from 'fs';
+import path from 'path';
 import { OpenAIResponse } from '../types';
 
 class OpenAIService {
@@ -19,19 +20,25 @@ class OpenAIService {
   }
 
   async transcribeAudio(audioBuffer: Buffer, filename: string): Promise<string> {
+    const tempFilePath = path.join('/tmp', `temp-${Date.now()}-${filename}`);
+    
     try {
       const client = this.getClient();
       
-      const stream = Readable.from(audioBuffer);
-      (stream as any).path = filename;
+      fs.writeFileSync(tempFilePath, audioBuffer);
       
       const transcription = await client.audio.transcriptions.create({
-        file: stream as any,
+        file: fs.createReadStream(tempFilePath),
         model: 'whisper-1',
       });
 
+      fs.unlinkSync(tempFilePath);
+
       return transcription.text;
     } catch (error) {
+      if (fs.existsSync(tempFilePath)) {
+        fs.unlinkSync(tempFilePath);
+      }
       console.error('OpenAI transcription error:', error);
       throw new Error('Failed to transcribe audio');
     }
