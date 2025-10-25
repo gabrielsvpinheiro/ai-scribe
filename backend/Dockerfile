@@ -1,5 +1,7 @@
 FROM node:18-alpine
 
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -9,7 +11,6 @@ COPY . .
 
 RUN npm run db:generate
 RUN npm run build
-RUN ls -la dist/
 
 EXPOSE 3001
 
