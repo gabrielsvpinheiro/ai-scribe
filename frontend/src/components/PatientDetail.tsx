@@ -2,20 +2,24 @@ import React, { useState } from 'react';
 import { Patient, Note } from '../types';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { ArrowLeft, User, Calendar, Mail, Phone, MapPin, Trash2, FileText, Mic } from 'lucide-react';
+import { ArrowLeft, User, Calendar, Mail, Phone, MapPin, Trash2, FileText, Mic, UserX } from 'lucide-react';
 import DeleteNoteDialog from './DeleteNoteDialog';
+import DeletePatientDialog from './DeletePatientDialog';
 
 interface PatientDetailProps {
   patient: Patient;
   onBack: () => void;
   onNoteClick: (noteId: string) => void;
   onDeleteNote: (noteId: string) => void;
+  onDeletePatient: (patientId: string) => void;
 }
 
-const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack, onNoteClick, onDeleteNote }) => {
+const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack, onNoteClick, onDeleteNote, onDeletePatient }) => {
   const [deletingNoteId, setDeletingNoteId] = useState<string | null>(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteNoteDialogOpen, setDeleteNoteDialogOpen] = useState(false);
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
+  const [deletePatientDialogOpen, setDeletePatientDialogOpen] = useState(false);
+  const [isDeletingPatient, setIsDeletingPatient] = useState(false);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -43,19 +47,33 @@ const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack, onNoteCl
   const handleDeleteClick = (noteId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setNoteToDelete(noteId);
-    setDeleteDialogOpen(true);
+    setDeleteNoteDialogOpen(true);
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDeleteNote = async () => {
     if (!noteToDelete) return;
     
     setDeletingNoteId(noteToDelete);
     try {
       await onDeleteNote(noteToDelete);
-      setDeleteDialogOpen(false);
+      setDeleteNoteDialogOpen(false);
       setNoteToDelete(null);
     } finally {
       setDeletingNoteId(null);
+    }
+  };
+
+  const handleDeletePatientClick = () => {
+    setDeletePatientDialogOpen(true);
+  };
+
+  const handleConfirmDeletePatient = async () => {
+    setIsDeletingPatient(true);
+    try {
+      await onDeletePatient(patient.id);
+      setDeletePatientDialogOpen(false);
+    } finally {
+      setIsDeletingPatient(false);
     }
   };
 
@@ -63,16 +81,26 @@ const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack, onNoteCl
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-8">
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="outline" 
-              onClick={onBack}
-              className="hover:bg-accent transition-colors"
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="outline" 
+                onClick={onBack}
+                className="hover:bg-accent transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Dashboard
+              </Button>
+              <h1 className="text-3xl font-bold text-foreground">Patient Details</h1>
+            </div>
+            <Button
+              variant="destructive"
+              onClick={handleDeletePatientClick}
+              className="hover:bg-destructive/90"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
+              <UserX className="h-4 w-4 mr-2" />
+              Delete Patient
             </Button>
-            <h1 className="text-3xl font-bold text-foreground">Patient Details</h1>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -243,10 +271,19 @@ const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack, onNoteCl
       </div>
 
       <DeleteNoteDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirm={handleConfirmDelete}
+        open={deleteNoteDialogOpen}
+        onOpenChange={setDeleteNoteDialogOpen}
+        onConfirm={handleConfirmDeleteNote}
         isDeleting={deletingNoteId !== null}
+      />
+
+      <DeletePatientDialog
+        open={deletePatientDialogOpen}
+        onOpenChange={setDeletePatientDialogOpen}
+        onConfirm={handleConfirmDeletePatient}
+        isDeleting={isDeletingPatient}
+        patientName={`${patient.firstName} ${patient.lastName}`}
+        notesCount={patient.notes?.length || 0}
       />
     </div>
   );
