@@ -76,13 +76,17 @@ function App() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Stethoscope className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-bold">AI Scribe</h1>
+          <div className="flex items-center gap-4 mb-3">
+            <div className="p-3 bg-primary/10 rounded-xl">
+              <Stethoscope className="h-8 w-8 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">AI Scribe</h1>
+              <p className="text-muted-foreground text-sm">
+                AI-powered clinical notes management system
+              </p>
+            </div>
           </div>
-          <p className="text-muted-foreground">
-            AI-powered clinical notes management system
-          </p>
         </div>
 
         {error && (
@@ -99,7 +103,7 @@ function App() {
           </Card>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <PatientSelector
             patients={patients}
             selectedPatientId={selectedPatientId}
