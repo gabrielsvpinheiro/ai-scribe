@@ -194,24 +194,40 @@ ai-scribe/
 ├── backend/
 │   ├── src/
 │   │   ├── controllers/     # API controllers
-│   │   ├── middleware/     # Security middleware
-│   │   ├── routes/         # API routes
-│   │   ├── services/       # OpenAI integration
-│   │   └── types/          # TypeScript types
+│   │   ├── middleware/      # Security middleware
+│   │   ├── routes/          # API routes
+│   │   ├── services/        # OpenAI integration
+│   │   └── types/           # TypeScript types
 │   ├── tests/
-│   │   ├── unit/           # Unit tests
-│   │   └── integration/    # Integration tests
-│   ├── prisma/            # Database schema and seeds
-│   └── uploads/           # Audio file storage
+│   │   ├── unit/
+│   │   │   └── controllers/ # Controller unit tests
+│   │   └── integration/     # API integration tests
+│   ├── prisma/
+│   │   ├── schema.prisma    # Database schema
+│   │   └── seed.ts          # Seed data
+│   ├── uploads/             # Audio file storage
+│   ├── jest.config.js       # Jest configuration
+│   ├── Dockerfile
+│   └── package.json
 ├── frontend/
 │   ├── src/
-│   │   ├── components/     # React components
-│   │   ├── services/       # API service
-│   │   └── types/          # TypeScript types
-│   ├── e2e/               # Playwright E2E tests
-│   └── playwright.config.ts
-├── demo-files/            # Example notes and audio
-└── docker-compose.yml     # Development environment
+│   │   ├── components/
+│   │   │   ├── ui/          # shadcn/ui components
+│   │   │   └── *.tsx        # Feature components
+│   │   ├── services/        # API service
+│   │   ├── lib/             # Utilities
+│   │   └── types/           # TypeScript types
+│   ├── e2e/                 # Playwright E2E tests
+│   ├── public/              # Static assets
+│   ├── playwright.config.ts
+│   ├── tailwind.config.js
+│   ├── Dockerfile
+│   └── package.json
+├── demo-files/
+│   ├── notes/               # Example text notes
+│   └── audio/               # Example audio files
+├── docker-compose.yml       # Docker orchestration
+└── README.md
 ```
 
 ## Usage
