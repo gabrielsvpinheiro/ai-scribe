@@ -19,6 +19,7 @@ services:
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/ai_scribe
+      - OPENAI_API_KEY=test_key_for_development
     depends_on:
       - postgres
 
