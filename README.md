@@ -126,6 +126,60 @@ npm start
 ### Health Check
 - `GET /health` - API health status
 
+## Testing
+
+### Backend Tests
+
+The backend includes comprehensive unit and integration tests using Jest and Supertest.
+
+```bash
+cd backend
+
+# Run all tests with coverage
+npm test
+
+# Run only unit tests
+npm run test:unit
+
+# Run only integration tests
+npm run test:integration
+
+# Watch mode
+npm run test:watch
+```
+
+**Test Coverage:**
+- Unit tests for all controllers (patient, note)
+- Integration tests for all API endpoints
+- Mock implementations for Prisma and OpenAI services
+
+### Frontend E2E Tests
+
+The frontend uses Playwright for end-to-end testing.
+
+```bash
+cd frontend
+
+# Install Playwright browsers (first time only)
+npx playwright install
+
+# Run E2E tests
+npm run test:e2e
+
+# Run with UI mode
+npm run test:e2e:ui
+
+# Run in headed mode (see browser)
+npm run test:e2e:headed
+```
+
+**Test Coverage:**
+- Patient management (create, view, delete)
+- Note management (create, view, delete)
+- Form validation
+- Navigation flows
+- Modal interactions
+
 ## Security Features
 
 - **Rate Limiting**: API endpoints are rate-limited
@@ -144,6 +198,9 @@ ai-scribe/
 │   │   ├── routes/         # API routes
 │   │   ├── services/       # OpenAI integration
 │   │   └── types/          # TypeScript types
+│   ├── tests/
+│   │   ├── unit/           # Unit tests
+│   │   └── integration/    # Integration tests
 │   ├── prisma/            # Database schema and seeds
 │   └── uploads/           # Audio file storage
 ├── frontend/
@@ -151,6 +208,9 @@ ai-scribe/
 │   │   ├── components/     # React components
 │   │   ├── services/       # API service
 │   │   └── types/          # TypeScript types
+│   ├── e2e/               # Playwright E2E tests
+│   └── playwright.config.ts
+├── demo-files/            # Example notes and audio
 └── docker-compose.yml     # Development environment
 ```
 
