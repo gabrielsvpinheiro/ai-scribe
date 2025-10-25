@@ -3,6 +3,7 @@ import { Patient, Note } from '../types';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { ArrowLeft, User, Calendar, Mail, Phone, MapPin, Trash2, FileText, Mic } from 'lucide-react';
+import DeleteNoteDialog from './DeleteNoteDialog';
 
 interface PatientDetailProps {
   patient: Patient;
@@ -13,6 +14,8 @@ interface PatientDetailProps {
 
 const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack, onNoteClick, onDeleteNote }) => {
   const [deletingNoteId, setDeletingNoteId] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -37,16 +40,22 @@ const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack, onNoteCl
     return previewContent ? `${previewContent.substring(0, 150)}...` : 'No content preview';
   };
 
-  const handleDeleteNote = async (noteId: string, e: React.MouseEvent) => {
+  const handleDeleteClick = (noteId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    setNoteToDelete(noteId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!noteToDelete) return;
     
-    if (window.confirm('Are you sure you want to delete this note? This action cannot be undone.')) {
-      setDeletingNoteId(noteId);
-      try {
-        await onDeleteNote(noteId);
-      } finally {
-        setDeletingNoteId(null);
-      }
+    setDeletingNoteId(noteToDelete);
+    try {
+      await onDeleteNote(noteToDelete);
+      setDeleteDialogOpen(false);
+      setNoteToDelete(null);
+    } finally {
+      setDeletingNoteId(null);
     }
   };
 
@@ -215,7 +224,7 @@ const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack, onNoteCl
                                 variant="ghost"
                                 size="sm"
                                 className="hover:bg-destructive/10 hover:text-destructive"
-                                onClick={(e) => handleDeleteNote(note.id, e)}
+                                onClick={(e) => handleDeleteClick(note.id, e)}
                                 disabled={deletingNoteId === note.id}
                               >
                                 <Trash2 className="h-4 w-4" />
@@ -232,6 +241,13 @@ const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack, onNoteCl
           </div>
         </div>
       </div>
+
+      <DeleteNoteDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        isDeleting={deletingNoteId !== null}
+      />
     </div>
   );
 };
