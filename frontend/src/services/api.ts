@@ -54,6 +54,12 @@ class ApiService {
       body: formData,
     });
   }
+
+  async deleteNote(id: string): Promise<void> {
+    await this.request<void>(`/api/notes/${id}`, {
+      method: 'DELETE',
+    });
+  }
 }
 
 export default new ApiService();

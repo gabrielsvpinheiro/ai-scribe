@@ -8,6 +8,7 @@ export interface Patient {
   phone?: string;
   address?: string;
   createdAt: string;
+  notes?: Note[];
 }
 
 export interface Note {
