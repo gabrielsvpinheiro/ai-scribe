@@ -167,3 +167,33 @@ export const getNoteById = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to fetch note' });
   }
 };
+
+export const deleteNote = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const note = await prisma.note.findUnique({
+      where: { id }
+    });
+
+    if (!note) {
+      return res.status(404).json({ error: 'Note not found' });
+    }
+
+    if (note.audioUrl) {
+      const filepath = path.join(process.env.UPLOAD_DIR || './uploads', path.basename(note.audioUrl));
+      if (fs.existsSync(filepath)) {
+        fs.unlinkSync(filepath);
+      }
+    }
+
+    await prisma.note.delete({
+      where: { id }
+    });
+
+    res.json({ message: 'Note deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting note:', error);
+    res.status(500).json({ error: 'Failed to delete note' });
+  }
+};

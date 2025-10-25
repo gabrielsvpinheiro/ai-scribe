@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createNote, getAllNotes, getNoteById } from '../controllers/noteController';
+import { createNote, getAllNotes, getNoteById, deleteNote } from '../controllers/noteController';
 import multer from 'multer';
 import { uploadLimiter } from '../middleware/security';
 
@@ -22,5 +22,6 @@ const router = Router();
 router.post('/', uploadLimiter, upload.single('audioFile'), createNote);
 router.get('/', getAllNotes);
 router.get('/:id', getNoteById);
+router.delete('/:id', deleteNote);
 
 export default router;
