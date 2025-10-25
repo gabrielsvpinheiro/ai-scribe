@@ -74,6 +74,12 @@ class ApiService {
       body: JSON.stringify(data),
     });
   }
+
+  async deletePatient(id: string): Promise<void> {
+    await this.request<void>(`/api/patients/${id}`, {
+      method: 'DELETE',
+    });
+  }
 }
 
 export default new ApiService();
