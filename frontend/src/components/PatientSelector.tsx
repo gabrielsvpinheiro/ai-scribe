@@ -2,13 +2,14 @@ import React from 'react';
 import { Patient } from '../types';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Eye } from 'lucide-react';
+import { Eye, UserPlus } from 'lucide-react';
 
 interface PatientSelectorProps {
   patients: Patient[];
   selectedPatientId: string | null;
   onSelectPatient: (patientId: string) => void;
   onViewPatient?: (patientId: string) => void;
+  onAddPatient?: () => void;
 }
 
 const PatientSelector: React.FC<PatientSelectorProps> = ({
@@ -16,11 +17,25 @@ const PatientSelector: React.FC<PatientSelectorProps> = ({
   selectedPatientId,
   onSelectPatient,
   onViewPatient,
+  onAddPatient,
 }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Select Patient</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>Select Patient</CardTitle>
+          {onAddPatient && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onAddPatient}
+              className="hover:bg-primary/10"
+            >
+              <UserPlus className="h-4 w-4 mr-2" />
+              Add Patient
+            </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid gap-3">
