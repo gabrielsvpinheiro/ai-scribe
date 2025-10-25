@@ -134,6 +134,22 @@ function App() {
     }
   };
 
+  const handleDeletePatient = async (patientId: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      await apiService.deletePatient(patientId);
+      setPatients(prev => prev.filter(p => p.id !== patientId));
+      setNotes(prev => prev.filter(note => note.patient.id !== patientId));
+      handleBackToDashboard();
+    } catch (err) {
+      setError('Failed to delete patient. Please try again.');
+      console.error('Error deleting patient:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const selectedNote = selectedNoteId ? notes.find(note => note.id === selectedNoteId) : null;
   const viewPatient = viewPatientId ? patients.find(p => p.id === viewPatientId) : null;
 
@@ -148,6 +164,7 @@ function App() {
         onBack={handleBackToDashboard}
         onNoteClick={handleNoteClick}
         onDeleteNote={handleDeleteNote}
+        onDeletePatient={handleDeletePatient}
       />
     );
   }
