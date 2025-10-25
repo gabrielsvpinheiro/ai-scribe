@@ -86,12 +86,14 @@ export const createPatient = async (req: Request, res: Response) => {
 
     const patientId = `PAT-${uuidv4().slice(0, 8).toUpperCase()}`;
 
+    const dobDate = new Date(dateOfBirth + 'T12:00:00.000Z');
+
     const patient = await prisma.patient.create({
       data: {
         firstName,
         lastName,
         patientId,
-        dateOfBirth: new Date(dateOfBirth),
+        dateOfBirth: dobDate,
         email: email || null,
         phone: phone || null,
         address: address || null
