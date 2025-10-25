@@ -9,9 +9,9 @@ export interface CreateNoteRequest {
 export interface NoteResponse {
   id: string;
   content: string;
-  transcription?: string;
-  summary?: string;
-  audioUrl?: string;
+  transcription?: string | null;
+  summary?: string | null;
+  audioUrl?: string | null;
   createdAt: Date;
   patient: {
     id: string;
@@ -28,9 +28,9 @@ export interface PatientResponse {
   lastName: string;
   patientId: string;
   dateOfBirth: Date;
-  email?: string;
-  phone?: string;
-  address?: string;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
   createdAt: Date;
 }
 
