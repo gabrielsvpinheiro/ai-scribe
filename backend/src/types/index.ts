@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 export interface CreateNoteRequest {
   patientId: string;
   content?: string;
