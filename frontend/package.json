@@ -1,6 +1,7 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "ai-scribe-frontend",
+  "version": "1.0.0",
+  "description": "AI Scribe - Clinical Notes Management Frontend",
   "private": true,
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
