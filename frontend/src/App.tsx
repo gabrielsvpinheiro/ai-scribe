@@ -5,17 +5,19 @@ import PatientSelector from './components/PatientSelector';
 import NoteForm from './components/NoteForm';
 import NotesList from './components/NotesList';
 import NoteDetail from './components/NoteDetail';
-import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
-import { Stethoscope, FileText } from 'lucide-react';
+import PatientDetail from './components/PatientDetail';
+import { Card, CardContent } from './components/ui/card';
+import { Stethoscope } from 'lucide-react';
 
-type ViewMode = 'list' | 'detail';
+type ViewMode = 'dashboard' | 'note-detail' | 'patient-detail';
 
 function App() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [viewPatientId, setViewPatientId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('dashboard');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,18 +60,72 @@ function App() {
 
   const handleNoteClick = (noteId: string) => {
     setSelectedNoteId(noteId);
-    setViewMode('detail');
+    setViewMode('note-detail');
   };
 
-  const handleBackToList = () => {
+  const handlePatientClick = async (patientId: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const patientData = await apiService.getPatientById(patientId);
+      const updatedPatients = patients.map(p => 
+        p.id === patientId ? patientData : p
+      );
+      setPatients(updatedPatients);
+      setViewPatientId(patientId);
+      setViewMode('patient-detail');
+    } catch (err) {
+      setError('Failed to load patient details. Please try again.');
+      console.error('Error loading patient:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleBackToDashboard = () => {
     setSelectedNoteId(null);
-    setViewMode('list');
+    setViewPatientId(null);
+    setViewMode('dashboard');
+  };
+
+  const handleDeleteNote = async (noteId: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      await apiService.deleteNote(noteId);
+      setNotes(prev => prev.filter(note => note.id !== noteId));
+      
+      if (viewPatientId) {
+        const patientData = await apiService.getPatientById(viewPatientId);
+        const updatedPatients = patients.map(p => 
+          p.id === viewPatientId ? patientData : p
+        );
+        setPatients(updatedPatients);
+      }
+    } catch (err) {
+      setError('Failed to delete note. Please try again.');
+      console.error('Error deleting note:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const selectedNote = selectedNoteId ? notes.find(note => note.id === selectedNoteId) : null;
+  const viewPatient = viewPatientId ? patients.find(p => p.id === viewPatientId) : null;
 
-  if (viewMode === 'detail' && selectedNote) {
-    return <NoteDetail note={selectedNote} onBack={handleBackToList} />;
+  if (viewMode === 'note-detail' && selectedNote) {
+    return <NoteDetail note={selectedNote} onBack={handleBackToDashboard} />;
+  }
+
+  if (viewMode === 'patient-detail' && viewPatient) {
+    return (
+      <PatientDetail 
+        patient={viewPatient} 
+        onBack={handleBackToDashboard}
+        onNoteClick={handleNoteClick}
+        onDeleteNote={handleDeleteNote}
+      />
+    );
   }
 
   return (
@@ -108,6 +164,7 @@ function App() {
             patients={patients}
             selectedPatientId={selectedPatientId}
             onSelectPatient={setSelectedPatientId}
+            onViewPatient={handlePatientClick}
           />
           <NoteForm
             selectedPatientId={selectedPatientId}
