@@ -29,111 +29,152 @@ const NoteDetail: React.FC<NoteDetailProps> = ({ note, onBack }) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="outline" onClick={onBack}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Notes
-        </Button>
-        <h1 className="text-2xl font-bold">Note Details</h1>
-      </div>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-8">
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              onClick={onBack}
+              className="hover:bg-accent transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Notes
+            </Button>
+            <h1 className="text-3xl font-bold text-foreground">Note Details</h1>
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Note Content
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {note.content && (
-                <div>
-                  <h4 className="font-medium mb-2">Original Content:</h4>
-                  <p className="text-sm bg-muted p-3 rounded-md">{note.content}</p>
-                </div>
-              )}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-6">
+              <Card className="shadow-md">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <FileText className="h-5 w-5 text-primary" />
+                    </div>
+                    Note Content
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {note.content && (
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-base text-foreground">Original Content</h4>
+                      <div className="bg-muted/50 p-4 rounded-lg border border-border">
+                        <p className="text-sm leading-relaxed text-foreground">{note.content}</p>
+                      </div>
+                    </div>
+                  )}
 
-              {note.transcription && (
-                <div>
-                  <h4 className="font-medium mb-2">Transcription:</h4>
-                  <p className="text-sm bg-muted p-3 rounded-md">{note.transcription}</p>
-                </div>
-              )}
+                  {note.transcription && (
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-base text-foreground">Transcription</h4>
+                      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <p className="text-sm leading-relaxed text-blue-900">{note.transcription}</p>
+                      </div>
+                    </div>
+                  )}
 
-              {note.summary && (
-                <div>
-                  <h4 className="font-medium mb-2">AI Summary (SOAP Format):</h4>
-                  <div className="text-sm bg-primary/5 p-3 rounded-md border-l-4 border-primary">
-                    <pre className="whitespace-pre-wrap">{note.summary}</pre>
+                  {note.summary && (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-semibold text-base text-foreground">AI Summary</h4>
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                          SOAP Format
+                        </span>
+                      </div>
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-lg border-l-4 border-green-500 shadow-sm">
+                        <pre className="whitespace-pre-wrap text-sm leading-relaxed text-green-900 font-sans">
+                          {note.summary}
+                        </pre>
+                      </div>
+                    </div>
+                  )}
+
+                  {note.audioUrl && (
+                    <div className="space-y-3">
+                      <h4 className="font-semibold text-base text-foreground flex items-center gap-2">
+                        <Mic className="h-4 w-4 text-primary" />
+                        Audio Recording
+                      </h4>
+                      <div className="bg-muted/30 p-4 rounded-lg border border-border">
+                        <audio controls className="w-full">
+                          <source src={note.audioUrl} type="audio/mpeg" />
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="space-y-6">
+              <Card className="shadow-md">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-3 text-lg">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <User className="h-5 w-5 text-primary" />
+                    </div>
+                    Patient Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-5">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-lg text-foreground">
+                      {note.patient.firstName} {note.patient.lastName}
+                    </h4>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-medium text-muted-foreground">Patient ID:</span>
+                      <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                        {note.patient.patientId}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              )}
 
-              {note.audioUrl && (
-                <div>
-                  <h4 className="font-medium mb-2">Audio Recording:</h4>
-                  <audio controls className="w-full">
-                    <source src={note.audioUrl} type="audio/mpeg" />
-                    Your browser does not support the audio element.
-                  </audio>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                  <div className="pt-3 border-t border-border">
+                    <div className="flex items-center gap-3 text-sm bg-muted/30 p-3 rounded-lg">
+                      <Calendar className="h-4 w-4 text-primary flex-shrink-0" />
+                      <div>
+                        <span className="text-xs text-muted-foreground block">Date of Birth</span>
+                        <span className="font-medium text-foreground">
+                          {formatPatientDOB(note.patient.dateOfBirth)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Patient Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <h4 className="font-medium text-lg">
-                  {note.patient.firstName} {note.patient.lastName}
-                </h4>
-                <p className="text-sm text-muted-foreground">
-                  Patient ID: {note.patient.patientId}
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span>DOB: {formatPatientDOB(note.patient.dateOfBirth)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Note Metadata</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="flex items-center gap-2 text-sm">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span>Created: {formatDate(note.createdAt)}</span>
-              </div>
-              {note.audioUrl && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Mic className="h-4 w-4 text-muted-foreground" />
-                  <span>Audio recording available</span>
-                </div>
-              )}
-              {note.summary && (
-                <div className="flex items-center gap-2 text-sm">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <span>AI summary generated</span>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+              <Card className="shadow-md">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg">Note Metadata</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center gap-3 text-sm bg-muted/30 p-3 rounded-lg">
+                    <Calendar className="h-4 w-4 text-primary flex-shrink-0" />
+                    <div>
+                      <span className="text-xs text-muted-foreground block">Created</span>
+                      <span className="font-medium text-foreground">{formatDate(note.createdAt)}</span>
+                    </div>
+                  </div>
+                  
+                  {note.audioUrl && (
+                    <div className="flex items-center gap-3 text-sm bg-blue-50 p-3 rounded-lg border border-blue-200">
+                      <Mic className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                      <span className="text-blue-900 font-medium">Audio recording available</span>
+                    </div>
+                  )}
+                  
+                  {note.summary && (
+                    <div className="flex items-center gap-3 text-sm bg-green-50 p-3 rounded-lg border border-green-200">
+                      <FileText className="h-4 w-4 text-green-600 flex-shrink-0" />
+                      <span className="text-green-900 font-medium">AI summary generated</span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
