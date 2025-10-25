@@ -9,15 +9,28 @@ app.use(cors());
 app.use('/api/patients', patientRoutes);
 
 jest.mock('@prisma/client', () => {
+  const mockPatientData = {
+    id: 'test-patient-id',
+    firstName: 'Test',
+    lastName: 'Patient',
+    patientId: 'PAT-001',
+    dateOfBirth: new Date('1990-01-01T12:00:00.000Z'),
+    email: 'test@example.com',
+    phone: '555-0000',
+    address: '123 Test St',
+    createdAt: new Date(),
+    notes: [],
+  };
+
   const mockPrismaClient = {
     patient: {
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      delete: jest.fn(),
+      findMany: jest.fn().mockResolvedValue([mockPatientData]),
+      findUnique: jest.fn().mockResolvedValue(mockPatientData),
+      create: jest.fn().mockResolvedValue(mockPatientData),
+      delete: jest.fn().mockResolvedValue(mockPatientData),
     },
     note: {
-      deleteMany: jest.fn(),
+      deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
     },
   };
   return { PrismaClient: jest.fn(() => mockPrismaClient) };

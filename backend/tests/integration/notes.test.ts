@@ -8,10 +8,58 @@ app.use(express.json());
 app.use(cors());
 app.use('/api/notes', noteRoutes);
 
-jest.mock('@prisma/client');
-jest.mock('../../src/services/openai');
+jest.mock('@prisma/client', () => {
+  const mockPatientData = {
+    id: 'test-patient-id',
+    firstName: 'John',
+    lastName: 'Doe',
+    patientId: 'PAT-001',
+    dateOfBirth: new Date('1990-01-01'),
+  };
+
+  const mockNoteData = {
+    id: 'test-note-id',
+    content: 'Test note content',
+    transcription: null,
+    summary: 'Test summary',
+    audioUrl: null,
+    createdAt: new Date(),
+    patientId: 'test-patient-id',
+    patient: mockPatientData,
+  };
+
+  const mockPrismaClient = {
+    patient: {
+      findUnique: jest.fn().mockResolvedValue(mockPatientData),
+    },
+    note: {
+      findMany: jest.fn().mockResolvedValue([mockNoteData]),
+      findUnique: jest.fn().mockResolvedValue(mockNoteData),
+      create: jest.fn().mockResolvedValue(mockNoteData),
+      delete: jest.fn().mockResolvedValue(mockNoteData),
+    },
+  };
+  return { PrismaClient: jest.fn(() => mockPrismaClient) };
+});
+
+jest.mock('../../src/services/openai', () => ({
+  __esModule: true,
+  default: {
+    processNote: jest.fn().mockResolvedValue({
+      transcription: null,
+      summary: 'Test summary',
+    }),
+  },
+}));
 
 describe('Note API - Integration Tests', () => {
+  beforeAll(() => {
+    process.env.UPLOAD_DIR = './test-uploads';
+  });
+
+  afterAll(() => {
+    delete process.env.UPLOAD_DIR;
+  });
   describe('GET /api/notes', () => {
     it('should return 200 and list of notes', async () => {
       const response = await request(app)
