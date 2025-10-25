@@ -110,12 +110,18 @@ npm start
 
 ### Patients
 - `GET /api/patients` - Get all patients
-- `GET /api/patients/:id` - Get patient by ID
+- `GET /api/patients/:id` - Get patient by ID with associated notes
+- `POST /api/patients` - Create new patient
+  - Body: `{ firstName, lastName, dateOfBirth, email?, phone?, address? }`
+- `DELETE /api/patients/:id` - Delete patient and all associated notes
 
 ### Notes
-- `GET /api/notes` - Get all notes
-- `GET /api/notes/:id` - Get note by ID
+- `GET /api/notes` - Get all notes with patient information
+- `GET /api/notes/:id` - Get note by ID with full details
 - `POST /api/notes` - Create new note (supports multipart/form-data)
+  - Form fields: `patientId`, `content?`, `audioFile?`
+  - Audio transcription and AI summarization automatic
+- `DELETE /api/notes/:id` - Delete note and associated audio file
 
 ### Health Check
 - `GET /health` - API health status
@@ -150,12 +156,21 @@ ai-scribe/
 
 ## Usage
 
-1. **Select a Patient**: Choose from the pre-seeded patients
+### Patient Management
+1. **View Patients**: See all patients in the selector
+2. **Add Patient**: Click "Add Patient" button to create a new patient
+3. **View Patient Details**: Click the eye icon (👁️) to see patient information and all their notes
+4. **Delete Patient**: In patient details, click "Delete Patient" to remove patient and all associated notes
+
+### Note Management
+1. **Select a Patient**: Choose from the patient list
 2. **Create a Note**: 
    - Enter text directly, or
    - Upload an audio file for transcription
-3. **View Notes**: Browse all notes with patient information
-4. **Note Details**: Click any note to view full transcription and AI summary
+   - AI will automatically generate a SOAP format summary
+3. **View Notes**: Browse all notes with patient information on the dashboard
+4. **Note Details**: Click any note to view full transcription, AI summary, and audio player
+5. **Delete Note**: In patient details or note view, click the trash icon to remove a note
 
 ## AI Processing
 
