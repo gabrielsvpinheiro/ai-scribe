@@ -37,7 +37,18 @@ export const getPatientById = async (req: Request, res: Response) => {
       where: { id },
       include: {
         notes: {
-          orderBy: { createdAt: 'desc' }
+          orderBy: { createdAt: 'desc' },
+          include: {
+            patient: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                patientId: true,
+                dateOfBirth: true
+              }
+            }
+          }
         }
       }
     });
@@ -46,7 +57,7 @@ export const getPatientById = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Patient not found' });
     }
 
-    const response: PatientResponse = {
+    res.json({
       id: patient.id,
       firstName: patient.firstName,
       lastName: patient.lastName,
@@ -55,10 +66,9 @@ export const getPatientById = async (req: Request, res: Response) => {
       email: patient.email,
       phone: patient.phone,
       address: patient.address,
-      createdAt: patient.createdAt
-    };
-
-    res.json(response);
+      createdAt: patient.createdAt,
+      notes: patient.notes
+    });
   } catch (error) {
     console.error('Error fetching patient:', error);
     res.status(500).json({ error: 'Failed to fetch patient' });
