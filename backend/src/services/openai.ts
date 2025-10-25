@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { Readable } from 'stream';
 import { OpenAIResponse } from '../types';
 
 class OpenAIService {
@@ -20,9 +21,12 @@ class OpenAIService {
   async transcribeAudio(audioBuffer: Buffer, filename: string): Promise<string> {
     try {
       const client = this.getClient();
-      const file = new File([audioBuffer], filename, { type: 'audio/mpeg' });
+      
+      const stream = Readable.from(audioBuffer);
+      (stream as any).path = filename;
+      
       const transcription = await client.audio.transcriptions.create({
-        file: file,
+        file: stream as any,
         model: 'whisper-1',
       });
 
