@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Patient } from '../types';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Eye, UserPlus } from 'lucide-react';
+import { Input } from './ui/input';
+import { Eye, UserPlus, Search } from 'lucide-react';
 
 interface PatientSelectorProps {
   patients: Patient[];
@@ -19,10 +20,25 @@ const PatientSelector: React.FC<PatientSelectorProps> = ({
   onViewPatient,
   onAddPatient,
 }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredPatients = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return patients;
+    }
+
+    const query = searchQuery.toLowerCase();
+    return patients.filter((patient) => {
+      const fullName = `${patient.firstName} ${patient.lastName}`.toLowerCase();
+      const email = patient.email?.toLowerCase() || '';
+      return fullName.includes(query) || email.includes(query);
+    });
+  }, [patients, searchQuery]);
+
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <CardTitle>Select Patient</CardTitle>
           {onAddPatient && (
             <Button
@@ -36,10 +52,28 @@ const PatientSelector: React.FC<PatientSelectorProps> = ({
             </Button>
           )}
         </div>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Search by name or email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9"
+          />
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-3">
-          {patients.map((patient) => (
+        {filteredPatients.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <p>No patients found</p>
+            {searchQuery && (
+              <p className="text-sm mt-2">Try adjusting your search</p>
+            )}
+          </div>
+        ) : (
+          <div className="grid gap-3">
+            {filteredPatients.map((patient) => (
             <div key={patient.id} className="relative group">
               <Button
                 variant={selectedPatientId === patient.id ? "default" : "outline"}
@@ -92,7 +126,8 @@ const PatientSelector: React.FC<PatientSelectorProps> = ({
               )}
             </div>
           ))}
-        </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
