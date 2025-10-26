@@ -1,0 +1,312 @@
+{
+	"info": {
+		"_postman_id": "ai-scribe-collection",
+		"name": "AI Scribe - Clinical Notes API",
+		"description": "Complete API collection for AI Scribe - Clinical Notes Management System\n\nThis collection includes all endpoints for managing patients and clinical notes with AI-powered transcription and summarization.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Patients",
+			"item": [
+				{
+					"name": "Get All Patients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/patients",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							]
+						},
+						"description": "Retrieve a list of all patients in the system."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Patient by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/patients/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "Patient UUID"
+								}
+							]
+						},
+						"description": "Retrieve detailed information about a specific patient, including all their notes."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Patient",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"dateOfBirth\": \"1980-01-15\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+1 (555) 123-4567\",\n  \"address\": \"123 Main St, New York, NY 10001\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/patients",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"patients"
+							]
+						},
+						"description": "Create a new patient in the system.\n\n**Required fields:**\n- firstName\n- lastName\n- dateOfBirth (YYYY-MM-DD format)\n\n**Optional fields:**\n- email\n- phone\n- address"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Patient",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/patients/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"patients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "Patient UUID"
+								}
+							]
+						},
+						"description": "Delete a patient and all their associated notes and audio files."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for managing patient records."
+		},
+		{
+			"name": "Notes",
+			"item": [
+				{
+					"name": "Get All Notes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/notes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"notes"
+							]
+						},
+						"description": "Retrieve a list of all clinical notes in the system, ordered by creation date (newest first)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Note by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/notes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "Note UUID"
+								}
+							]
+						},
+						"description": "Retrieve detailed information about a specific note, including transcription, AI summary, and patient details."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Note (Text)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"patientId\": \"patient-uuid-here\",\n  \"content\": \"Patient reports mild headache for the past 2 days. No fever or other symptoms. Vital signs normal. Advised rest and hydration.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/notes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"notes"
+							]
+						},
+						"description": "Create a new clinical note with text content.\n\nThe AI will automatically generate a SOAP format summary.\n\n**Required fields:**\n- patientId (UUID)\n- content (text)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Note (Audio)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "patientId",
+									"value": "patient-uuid-here",
+									"type": "text",
+									"description": "Patient UUID"
+								},
+								{
+									"key": "audioFile",
+									"type": "file",
+									"src": [],
+									"description": "Audio file (mp3, wav, m4a, etc.)"
+								},
+								{
+									"key": "content",
+									"value": "",
+									"type": "text",
+									"description": "Optional additional text content"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/notes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"notes"
+							]
+						},
+						"description": "Create a new clinical note with audio recording.\n\nThe audio will be:\n1. Transcribed using OpenAI Whisper\n2. Summarized in SOAP format using GPT-3.5-turbo\n3. Stored in the uploads directory\n\n**Required fields:**\n- patientId (UUID)\n- audioFile (audio file, max 10MB)\n\n**Optional fields:**\n- content (additional text)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Note",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/notes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "Note UUID"
+								}
+							]
+						},
+						"description": "Delete a clinical note and its associated audio file (if any)."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for managing clinical notes with AI-powered transcription and summarization."
+		},
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"health"
+					]
+				},
+				"description": "Check if the API server is running and healthy."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3001",
+			"type": "string"
+		}
+	]
+}
+

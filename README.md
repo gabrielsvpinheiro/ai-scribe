@@ -213,6 +213,38 @@ ai-scribe/
 4. **Note Details**: Click any note to view full transcription, AI summary, and audio player
 5. **Delete Note**: In patient details or note view, click the trash icon to remove a note
 
+## API Testing with Postman
+
+A complete Postman collection is included in the project for easy API testing.
+
+### Import Collection
+
+1. Open Postman
+2. Click **Import** button
+3. Select `AI-Scribe.postman_collection.json` from the project root
+4. The collection will be imported with all endpoints configured
+
+### Available Endpoints
+
+**Patients:**
+- `GET /api/patients` - Get all patients
+- `GET /api/patients/:id` - Get patient by ID (with notes)
+- `POST /api/patients` - Create new patient
+- `DELETE /api/patients/:id` - Delete patient
+
+**Notes:**
+- `GET /api/notes` - Get all notes
+- `GET /api/notes/:id` - Get note by ID
+- `POST /api/notes` - Create note (text or audio)
+- `DELETE /api/notes/:id` - Delete note
+
+**Health:**
+- `GET /health` - API health check
+
+### Environment Variables
+
+The collection uses a `base_url` variable set to `http://localhost:3001` by default. You can change this in Postman's environment settings.
+
 ## AI Processing
 
 - **Audio Transcription**: Uses OpenAI Whisper for accurate speech-to-text
