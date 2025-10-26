@@ -72,7 +72,7 @@ const PatientSelector: React.FC<PatientSelectorProps> = ({
             )}
           </div>
         ) : (
-          <div className="grid gap-3">
+          <div className="grid gap-3 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
             {filteredPatients.map((patient) => (
             <div key={patient.id} className="relative group">
               <Button
