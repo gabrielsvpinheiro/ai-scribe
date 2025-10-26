@@ -154,7 +154,13 @@ function App() {
   const viewPatient = viewPatientId ? patients.find(p => p.id === viewPatientId) : null;
 
   if (viewMode === 'note-detail' && selectedNote) {
-    return <NoteDetail note={selectedNote} onBack={handleBackToDashboard} />;
+    return (
+      <NoteDetail 
+        note={selectedNote} 
+        onBack={handleBackToDashboard}
+        onDelete={handleDeleteNote}
+      />
+    );
   }
 
   if (viewMode === 'patient-detail' && viewPatient) {

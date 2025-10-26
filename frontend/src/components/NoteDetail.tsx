@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Note } from '../types';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { ArrowLeft, User, Calendar, Phone, Mail, MapPin, FileText, Mic } from 'lucide-react';
+import { ArrowLeft, User, Calendar, FileText, Mic, Trash2 } from 'lucide-react';
+import DeleteNoteDialog from './DeleteNoteDialog';
 
 interface NoteDetailProps {
   note: Note;
   onBack: () => void;
+  onDelete: (noteId: string) => void;
 }
 
-const NoteDetail: React.FC<NoteDetailProps> = ({ note, onBack }) => {
+const NoteDetail: React.FC<NoteDetailProps> = ({ note, onBack, onDelete }) => {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -28,20 +33,45 @@ const NoteDetail: React.FC<NoteDetailProps> = ({ note, onBack }) => {
     });
   };
 
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await onDelete(note.id);
+      setDeleteDialogOpen(false);
+      onBack();
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-8">
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="outline" 
-              onClick={onBack}
-              className="hover:bg-accent transition-colors"
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="outline" 
+                onClick={onBack}
+                className="hover:bg-accent transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Notes
+              </Button>
+              <h1 className="text-3xl font-bold text-foreground">Note Details</h1>
+            </div>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteClick}
+              className="hover:bg-destructive/90"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Notes
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete Note
             </Button>
-            <h1 className="text-3xl font-bold text-foreground">Note Details</h1>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -194,6 +224,13 @@ const NoteDetail: React.FC<NoteDetailProps> = ({ note, onBack }) => {
           </div>
         </div>
       </div>
+
+      <DeleteNoteDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 };
