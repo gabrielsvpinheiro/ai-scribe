@@ -97,13 +97,15 @@ const Dashboard: React.FC = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="bg-primary/10 p-2 rounded-lg">
-              <Stethoscope className="h-8 w-8 text-primary" />
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary/10 p-2 rounded-lg">
+                <Stethoscope className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+              </div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">AI Scribe</h1>
             </div>
-            <h1 className="text-4xl font-bold text-foreground">AI Scribe</h1>
           </div>
-          <p className="text-muted-foreground">Clinical Notes Management System</p>
+          <p className="text-sm sm:text-base text-muted-foreground">Clinical Notes Management System</p>
         </div>
 
         {error && (
