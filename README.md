@@ -153,33 +153,6 @@ npm run test:watch
 - Integration tests for all API endpoints
 - Mock implementations for Prisma and OpenAI services
 
-### Frontend E2E Tests
-
-The frontend uses Playwright for end-to-end testing.
-
-```bash
-cd frontend
-
-# Install Playwright browsers (first time only)
-npx playwright install
-
-# Run E2E tests
-npm run test:e2e
-
-# Run with UI mode
-npm run test:e2e:ui
-
-# Run in headed mode (see browser)
-npm run test:e2e:headed
-```
-
-**Test Coverage:**
-- Patient management (create, view, delete)
-- Note management (create, view, delete)
-- Form validation
-- Navigation flows
-- Modal interactions
-
 ## Security Features
 
 - **Rate Limiting**: API endpoints are rate-limited
@@ -217,9 +190,7 @@ ai-scribe/
 │   │   ├── services/        # API service
 │   │   ├── lib/             # Utilities
 │   │   └── types/           # TypeScript types
-│   ├── e2e/                 # Playwright E2E tests
 │   ├── public/              # Static assets
-│   ├── playwright.config.ts
 │   ├── tailwind.config.js
 │   ├── Dockerfile
 │   └── package.json
