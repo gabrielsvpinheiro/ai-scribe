@@ -76,10 +76,10 @@ const PatientSelector: React.FC<PatientSelectorProps> = ({
                     e.stopPropagation();
                     onViewPatient(patient.id);
                   }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-primary/10"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all hover:bg-primary/20 bg-background/80 backdrop-blur-sm shadow-sm"
                   title="View patient details"
                 >
-                  <Eye className="h-4 w-4" />
+                  <Eye className="h-4 w-4 text-primary" />
                 </Button>
               )}
             </div>
