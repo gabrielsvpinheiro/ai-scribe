@@ -98,7 +98,9 @@ const Dashboard: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <Stethoscope className="h-8 w-8 text-primary" />
+            <div className="bg-primary/10 p-2 rounded-lg">
+              <Stethoscope className="h-8 w-8 text-primary" />
+            </div>
             <h1 className="text-4xl font-bold text-foreground">AI Scribe</h1>
           </div>
           <p className="text-muted-foreground">Clinical Notes Management System</p>
