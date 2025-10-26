@@ -190,7 +190,8 @@ ai-scribe/
 │   └── package.json
 ├── demo-files/                        # Example files for testing
 │   ├── notes/                         # Sample text notes
-│   └── audio/                         # Sample audio files
+│   ├── audio/                         # Sample audio files
+│   └── AI-Scribe.postman_collection.json  # Postman API collection
 ├── docker-compose.yml                 # Docker orchestration
 └── README.md
 ```
@@ -221,7 +222,7 @@ A complete Postman collection is included in the project for easy API testing.
 
 1. Open Postman
 2. Click **Import** button
-3. Select `AI-Scribe.postman_collection.json` from the project root
+3. Select `demo-files/AI-Scribe.postman_collection.json`
 4. The collection will be imported with all endpoints configured
 
 ### Available Endpoints
