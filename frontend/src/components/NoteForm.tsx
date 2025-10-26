@@ -3,38 +3,41 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
-import { Upload, Mic, FileText } from 'lucide-react';
+import { Mic, FileText } from 'lucide-react';
 
 interface NoteFormProps {
   selectedPatientId: string | null;
-  onSubmit: (data: { patientId: string; content?: string; audioFile?: File }) => void;
-  isLoading: boolean;
+  onSubmit: (content: string, audioFile?: File) => void;
 }
 
 const NoteForm: React.FC<NoteFormProps> = ({
   selectedPatientId,
   onSubmit,
-  isLoading,
 }) => {
   const [content, setContent] = useState('');
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [inputType, setInputType] = useState<'text' | 'audio'>('text');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedPatientId) return;
 
-    const data: { patientId: string; content?: string; audioFile?: File } = {
-      patientId: selectedPatientId,
-    };
+    if (inputType === 'text' && !content.trim()) return;
+    if (inputType === 'audio' && !audioFile) return;
 
-    if (inputType === 'text' && content.trim()) {
-      data.content = content.trim();
-    } else if (inputType === 'audio' && audioFile) {
-      data.audioFile = audioFile;
+    setIsSubmitting(true);
+    try {
+      if (inputType === 'text') {
+        await onSubmit(content.trim());
+      } else if (audioFile) {
+        await onSubmit('', audioFile);
+      }
+      setContent('');
+      setAudioFile(null);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    onSubmit(data);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,10 +104,10 @@ const NoteForm: React.FC<NoteFormProps> = ({
 
           <Button
             type="submit"
-            disabled={!selectedPatientId || isLoading || (!content.trim() && !audioFile)}
+            disabled={!selectedPatientId || isSubmitting || (!content.trim() && !audioFile)}
             className="w-full"
           >
-            {isLoading ? 'Processing...' : 'Create Note'}
+            {isSubmitting ? 'Processing...' : 'Create Note'}
           </Button>
         </form>
       </CardContent>
