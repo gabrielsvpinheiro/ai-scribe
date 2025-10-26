@@ -166,39 +166,87 @@ npm run test:watch
 ai-scribe/
 ├── backend/
 │   ├── src/
-│   │   ├── controllers/     # API controllers
-│   │   ├── middleware/      # Security middleware
-│   │   ├── routes/          # API routes
-│   │   ├── services/        # OpenAI integration
-│   │   └── types/           # TypeScript types
+│   │   ├── controllers/
+│   │   │   ├── noteController.ts      # Note CRUD operations
+│   │   │   └── patientController.ts   # Patient CRUD operations
+│   │   ├── middleware/
+│   │   │   └── security.ts            # Rate limiting, input validation, prompt injection protection
+│   │   ├── routes/
+│   │   │   ├── noteRoutes.ts          # Note API endpoints
+│   │   │   └── patientRoutes.ts       # Patient API endpoints
+│   │   ├── services/
+│   │   │   └── openai.ts              # Whisper transcription & GPT summarization
+│   │   ├── types/
+│   │   │   ├── index.ts               # TypeScript interfaces
+│   │   │   └── global.d.ts            # Global type declarations
+│   │   └── index.ts                   # Express app entry point
 │   ├── tests/
 │   │   ├── unit/
-│   │   │   └── controllers/ # Controller unit tests
-│   │   └── integration/     # API integration tests
+│   │   │   └── controllers/           # Unit tests for controllers
+│   │   │       ├── noteController.test.ts
+│   │   │       └── patientController.test.ts
+│   │   └── integration/               # API integration tests
+│   │       ├── notes.test.ts
+│   │       └── patients.test.ts
 │   ├── prisma/
-│   │   ├── schema.prisma    # Database schema
-│   │   └── seed.ts          # Seed data
-│   ├── uploads/             # Audio file storage
-│   ├── jest.config.js       # Jest configuration
-│   ├── Dockerfile
-│   └── package.json
+│   │   ├── schema.prisma              # Database schema (Patient & Note models)
+│   │   └── seed.ts                    # Seed data with sample patients
+│   ├── uploads/                       # Audio file storage (created at runtime)
+│   ├── jest.config.js                 # Jest test configuration
+│   ├── tsconfig.json                  # TypeScript configuration
+│   ├── Dockerfile                     # Backend Docker image
+│   ├── env.example                    # Environment variables template
+│   └── package.json                   # Backend dependencies
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── ui/          # shadcn/ui components
-│   │   │   └── *.tsx        # Feature components
-│   │   ├── services/        # API service
-│   │   ├── lib/             # Utilities
-│   │   └── types/           # TypeScript types
-│   ├── public/              # Static assets
-│   ├── tailwind.config.js
-│   ├── Dockerfile
-│   └── package.json
+│   │   │   ├── ui/                    # shadcn/ui base components
+│   │   │   │   ├── button.tsx
+│   │   │   │   ├── card.tsx
+│   │   │   │   ├── dialog.tsx
+│   │   │   │   ├── input.tsx
+│   │   │   │   ├── label.tsx
+│   │   │   │   └── textarea.tsx
+│   │   │   ├── AddPatientDialog.tsx   # Modal for creating patients
+│   │   │   ├── DeleteNoteDialog.tsx   # Confirmation modal for note deletion
+│   │   │   ├── DeletePatientDialog.tsx # Confirmation modal for patient deletion
+│   │   │   ├── NoteDetail.tsx         # Detailed note view with audio player
+│   │   │   ├── NoteForm.tsx           # Form for creating notes (text/audio)
+│   │   │   ├── NotesList.tsx          # List of all notes
+│   │   │   ├── PatientDetail.tsx      # Patient details with their notes
+│   │   │   └── PatientSelector.tsx    # Patient selection component
+│   │   ├── services/
+│   │   │   └── api.ts                 # API service for backend communication
+│   │   ├── lib/
+│   │   │   └── utils.ts               # Utility functions (cn for Tailwind)
+│   │   ├── types/
+│   │   │   └── index.ts               # TypeScript interfaces
+│   │   ├── App.tsx                    # Main application component
+│   │   ├── index.tsx                  # React entry point
+│   │   └── index.css                  # Global styles with Tailwind
+│   ├── public/
+│   │   ├── favicon.svg                # Custom stethoscope favicon
+│   │   ├── index.html                 # HTML template
+│   │   ├── manifest.json              # PWA manifest
+│   │   └── robots.txt                 # SEO robots file
+│   ├── tailwind.config.js             # Tailwind CSS configuration
+│   ├── postcss.config.js              # PostCSS configuration
+│   ├── tsconfig.json                  # TypeScript configuration
+│   ├── Dockerfile                     # Frontend Docker image
+│   ├── env.example                    # Environment variables template
+│   └── package.json                   # Frontend dependencies
 ├── demo-files/
-│   ├── notes/               # Example text notes
-│   └── audio/               # Example audio files
-├── docker-compose.yml       # Docker orchestration
-└── README.md
+│   ├── notes/                         # Example text notes for testing
+│   │   ├── note-example-1.txt
+│   │   ├── note-example-2.txt
+│   │   └── note-example-3.txt
+│   └── audio/                         # Example audio files for testing
+│       └── audio-example-1.wav
+├── docker-compose.yml                 # Docker orchestration (PostgreSQL, Backend, Frontend)
+├── package.json                       # Root package.json (monorepo)
+├── package-lock.json                  # Lock file
+├── .gitignore                         # Git ignore rules
+└── README.md                          # Project documentation
 ```
 
 ## Usage
