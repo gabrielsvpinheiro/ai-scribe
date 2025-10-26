@@ -42,10 +42,29 @@ const AddPatientDialog: React.FC<AddPatientDialogProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    const { name, value } = e.target;
+    
+    if (name === 'dateOfBirth') {
+      const cleaned = value.replace(/\D/g, '');
+      let formatted = cleaned;
+      
+      if (cleaned.length >= 2) {
+        formatted = cleaned.slice(0, 2) + '/' + cleaned.slice(2);
+      }
+      if (cleaned.length >= 4) {
+        formatted = cleaned.slice(0, 2) + '/' + cleaned.slice(2, 4) + '/' + cleaned.slice(4, 8);
+      }
+      
+      setFormData(prev => ({
+        ...prev,
+        [name]: formatted
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
     setError(null);
   };
 
@@ -57,6 +76,23 @@ const AddPatientDialog: React.FC<AddPatientDialogProps> = ({
       return;
     }
 
+    const dateParts = formData.dateOfBirth.split('/');
+    if (dateParts.length !== 3 || dateParts[0].length !== 2 || dateParts[1].length !== 2 || dateParts[2].length !== 4) {
+      setError('Please enter a valid date in MM/DD/YYYY format');
+      return;
+    }
+
+    const month = parseInt(dateParts[0]);
+    const day = parseInt(dateParts[1]);
+    const year = parseInt(dateParts[2]);
+
+    if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1900 || year > new Date().getFullYear()) {
+      setError('Please enter a valid date');
+      return;
+    }
+
+    const isoDate = `${year}-${dateParts[0]}-${dateParts[1]}`;
+
     setIsSubmitting(true);
     setError(null);
 
@@ -64,7 +100,7 @@ const AddPatientDialog: React.FC<AddPatientDialogProps> = ({
       await onSubmit({
         firstName: formData.firstName,
         lastName: formData.lastName,
-        dateOfBirth: formData.dateOfBirth,
+        dateOfBirth: isoDate,
         email: formData.email || undefined,
         phone: formData.phone || undefined,
         address: formData.address || undefined,
@@ -139,9 +175,11 @@ const AddPatientDialog: React.FC<AddPatientDialogProps> = ({
               <Input
                 id="dateOfBirth"
                 name="dateOfBirth"
-                type="date"
+                type="text"
                 value={formData.dateOfBirth}
                 onChange={handleChange}
+                placeholder="MM/DD/YYYY"
+                maxLength={10}
                 required
               />
             </div>
